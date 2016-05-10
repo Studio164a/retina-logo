@@ -45,7 +45,15 @@ function retlogo_custom_logo_image_attributes( $attr, $attachment, $size ) {
 
     $standard_size = $logo_meta[ 'sizes' ][ 'logo-standard' ];
 
-    $attr[ 'src' ] = $standard_size[ 'file' ];    
+    $dir = trailingslashit( _wp_get_attachment_relative_path( $attr[ 'src' ] ) );
+    
+    $upload_dir = wp_get_upload_dir();
+
+    if ( 0 !== strpos( $dir, $upload_dir[ 'baseurl' ] ) ) {
+        $dir = trailingslashit( $upload_dir[ 'baseurl' ] ) . $dir;
+    }
+
+    $attr[ 'src' ] = $dir . $standard_size[ 'file' ];    
     $attr[ 'sizes' ] = sprintf( '(max-width: %1$dpx) 100vw, %1$dpx', $standard_size[ 'width' ] );
 
     return $attr;
